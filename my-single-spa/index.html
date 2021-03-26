@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>single-spa</title>
+</head>
+
+<body>
+
+    <a onclick="a()">应用1</a>&nbsp;&nbsp;<a onclick="b()">应用2</a>
+
+    <script src="/lib/umd/single-spa.js"></script>
+    <script>
+        function a() { history.pushState({}, '', '/a') }
+        function b() { history.pushState({}, '', '/b') }
+
+        singleSpa.registerApplication('app1',
+            async (props) => {
+                console.log('加载时执行')
+                // 这个函数需要返回结果
+                return {
+                    bootstrap: [
+                        async (props) => {
+                            console.log('bootstrap1')
+                        },
+                        async (props) => {
+                            console.log('bootstrap2')
+                        },
+                        async (props) => {
+                            console.log('bootstrap3')
+                        },
+                    ],
+                    mount: async (props) => {
+                        console.log('mount')
+                    },
+                    unmount: async (props) => {
+                        console.log('unmount')
+                    }
+                }
+            },
+            // 使用hash的方式没有刷新问题
+            location => location.pathname.startsWith('/a'),
+            { store: { name: 'zf', age: 10 } }
+        )
+
+        singleSpa.registerApplication('app2',
+            async (props) => {
+                console.log('加载时执行2')
+                // 这个函数需要返回结果
+                return {
+                    bootstrap: async (props) => {
+                        console.log('bootstrap@2')
+                    },
+                    mount: async (props) => {
+                        console.log('mount@2')
+                    },
+                    unmount: async (props) => {
+                        console.log('unmount@2')
+                    }
+                }
+            },
+            // 使用hash的方式没有刷新问题
+            location => location.pathname.startsWith('/b'),
+            { store: { name: 'zt', age: 888 } }
+        )
+
+        singleSpa.start()
+    </script>
+
+    <!-- <a href="#/app1">应用1</a>&nbsp;&nbsp;<a href="#/app2">应用2</a> -->
+    <!-- <script>
+        singleSpa.registerApplication('app1',
+            async (props) => {
+                console.log('加载时执行')
+                // 这个函数需要返回结果
+                return {
+                    bootstrap: [
+                        async (props) => {
+                            console.log('bootstrap1')
+                        },
+                        async (props) => {
+                            console.log('bootstrap2')
+                        },
+                        async (props) => {
+                            console.log('bootstrap3')
+                        },
+                    ],
+                    mount: async (props) => {
+                        console.log('mount')
+                    },
+                    unmount: async (props) => {
+                        console.log('unmount')
+                    }
+                }
+            },
+            // 使用hash的方式没有刷新问题
+            location => location.hash.startsWith('#/app1'),
+            {store: {name: 'zf', age: 10}}
+        )
+
+        singleSpa.registerApplication('app2',
+            async (props) => {
+                console.log('加载时执行2')
+                // 这个函数需要返回结果
+                return {
+                    bootstrap: async (props) => {
+                            console.log('bootstrap@2')
+                        },
+                    mount: async (props) => {
+                        console.log('mount@2')
+                    },
+                    unmount: async (props) => {
+                        console.log('unmount@2')
+                    }
+                }
+            },
+            // 使用hash的方式没有刷新问题
+            location => location.hash.startsWith('#/app2'),
+            {store: {name: 'zt', age: 888}}
+        )
+
+
+        singleSpa.start()
+
+        window.addEventListener('hashchange', () => {
+
+        })
+
+        // registerApplication 默认会加载应用
+        // start时会挂载应用
+    </script> -->
+</body>
+
+</html>
