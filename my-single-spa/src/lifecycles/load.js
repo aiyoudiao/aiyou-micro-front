@@ -13,6 +13,7 @@ function flattenFnArray(fns) {
 }
 
 export async function toLoadPromise(app) {
+    // 说明正在加载中
     if (app.loadPromise) {
         return app.loadPromise // 缓存机制
     }
